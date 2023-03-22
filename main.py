@@ -46,28 +46,36 @@ def infer(true_labels, cluster_labels, k=10):
     for cluster, true in zip(cluster_labels, true_labels):
         cluster_coincidences[cluster][true] += 1
 
+    mejor_coincidencia = []
     for i in range(k):
-        print("Cluster {}:".format(i))
-        for j in range(10):
-            print("    {} coincidencias con el dígito {}".format(cluster_coincidences[i][j], j))
-        print()
-    mejor_coincidencia = dict()
-    for i in range(k):
-        mejor_coincidencia[i] = max(cluster_coincidences[i].items(), key=lambda x: x[1])[0]
+        mejor_coincidencia.append(max(cluster_coincidences[i].items(), key=lambda x: x[1])[0])
         print(f"Mejor coincidencia por cluster: {mejor_coincidencia[i]}")
     return mejor_coincidencia
 
 
+def plot_centroids(centroids, labels, x, y):
+    fig, axes = plt.subplots(x, y, figsize=(8, 3))
+    for i, pa in enumerate(zip(axes.flat, labels)):
+        ax, label = pa
+        ax.imshow(centroids[i].reshape(28, 28), cmap='binary')
+        ax.title.set_text(f"Label {label}")
+        ax.set(xticks=[], yticks=[])
+    plt.show()
+    plt.clf()
+
+
 def main():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
-    k = 50
     X = x_train.reshape(len(x_train), -1)
     Y = y_train
     X = X.astype(float) / 255.
     data = X.reshape(len(X), -1)
-    data = data[:1000]
-    cluster_labels, centroids = kmeans(data, k)
-    infer(Y, cluster_labels, k)
+    # data = data[:1000]
+    clusters = [10, 20, 30, 40, 50]
+    for cluster in clusters:
+        cluster_labels, centroids = kmeans(data, cluster)
+        mejor_coincidencia = infer(Y, cluster_labels, cluster)
+        plot_centroids(centroids, mejor_coincidencia, cluster//10, 10)
 
 
 if __name__ == '__main__':
