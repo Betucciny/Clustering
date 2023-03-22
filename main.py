@@ -47,18 +47,24 @@ def infer(true_labels, cluster_labels, k=10):
         cluster_coincidences[cluster][true] += 1
 
     mejor_coincidencia = []
+    porcentaje_suma = 0
     for i in range(k):
         mejor_coincidencia.append(max(cluster_coincidences[i].items(), key=lambda x: x[1])[0])
-        print(f"Mejor coincidencia por cluster: {mejor_coincidencia[i]}")
+        mejor_cantidad = cluster_coincidences[i][mejor_coincidencia[i]]
+        porcentaje = mejor_cantidad / sum(cluster_coincidences[i].values())
+        porcentaje_suma += porcentaje
+        # print(f'Porcentaje de aciertos para el cluster {i}: {porcentaje:.2%}')
+    porcentaje_promedio = porcentaje_suma / k
+    print(f'Porcentaje promedio de aciertos: {porcentaje_promedio:.2%}')
     return mejor_coincidencia
 
 
 def plot_centroids(centroids, labels, x, y):
-    fig, axes = plt.subplots(x, y, figsize=(8, 3))
+    fig, axes = plt.subplots(x, y, figsize=(20, 20))
     for i, pa in enumerate(zip(axes.flat, labels)):
         ax, label = pa
         ax.imshow(centroids[i].reshape(28, 28), cmap='binary')
-        ax.title.set_text(f"Label {label}")
+        ax.set_title(f"Label {label}", fontsize=16)
         ax.set(xticks=[], yticks=[])
     plt.show()
     plt.clf()
@@ -71,7 +77,7 @@ def main():
     X = X.astype(float) / 255.
     data = X.reshape(len(X), -1)
     # data = data[:1000]
-    clusters = [10, 20, 30, 40, 50]
+    clusters = [10, 30, 50, 70, 90]
     for cluster in clusters:
         cluster_labels, centroids = kmeans(data, cluster)
         mejor_coincidencia = infer(Y, cluster_labels, cluster)
