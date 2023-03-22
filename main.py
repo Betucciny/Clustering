@@ -94,13 +94,15 @@ def main():
     X = X.astype(float) / 255.
     # Reducción de dimensionalidad
     data = X.reshape(len(X), -1)
-    # data = data[:1000]
+    data = data[:1000]
 
     # Clustering
     clusters = [10, 30, 50, 70, 90]
     for cluster in clusters:
         cluster_labels, centroids = kmeans(data, cluster)
         mejor_coincidencia = infer(Y, cluster_labels, cluster)
+        np.savetxt(f'centroids_{cluster}.txt', np.asarray(centroids))
+        np.savetxt(f'labels_{cluster}.txt', mejor_coincidencia)
         plot_centroids(centroids, mejor_coincidencia, cluster//10, 10)
 
 
