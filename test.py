@@ -2,6 +2,7 @@ import numpy as np
 from keras.datasets import mnist
 
 
+# Lectura de centroides
 def read_centroid(clusters):
     centroids = []
     labels = []
@@ -11,6 +12,7 @@ def read_centroid(clusters):
     return centroids, labels
 
 
+# Calculo de la cantidad de coincidencias entre los clusters y las etiquetas verdaderas
 def coincidence(centroids, labels, X, Y):
     count_good = 0
     for vector, label in zip(X,Y):
@@ -26,8 +28,11 @@ def coincidence(centroids, labels, X, Y):
     return count_good / len(X)
 
 
+# Función principal
 def main():
+    # Cantidad de clusters
     clusters = [10, 30, 50, 70, 90]
+    # Lectura de centroides
     centroids, labels = read_centroid(clusters)
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     X = x_test.reshape(len(x_test), -1)
