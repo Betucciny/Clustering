@@ -41,30 +41,31 @@ def infer(true_labels, cluster_labels, k=10):
     cluster_coincidences = dict()
     for i in range(k):
         cluster_coincidences[i] = dict()
-        for j in range(k):
+        for j in range(len(true_labels)):
             cluster_coincidences[i][j] = 0
-    for cluster in cl
+    for cluster, true in zip(cluster_labels, true_labels):
+        cluster_coincidences[cluster][true] += 1
 
     for i in range(k):
-        print(f'Cluster: {i}, Coincidencias: {cluster_coincidences[i]}')
-
-
-
+        print("Cluster {}:".format(i))
+        for j in range(10):
+            print("    {} coincidencias con el dígito {}".format(cluster_coincidences[i][j], j))
+        print()
 
 
 def main():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
+    k = 50
     X = x_train.reshape(len(x_train), -1)
     Y = y_train
     X = X.astype(float) / 255.
     data = X.reshape(len(X), -1)
-    data = data[:1000]
-    cluster_labels, centroids = kmeans(data, 10)
-    infer(Y, cluster_labels)
+    data = data[:5000]
+    cluster_labels, centroids = kmeans(data, k)
+    infer(Y, cluster_labels, k)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
