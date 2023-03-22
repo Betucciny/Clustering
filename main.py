@@ -93,8 +93,7 @@ def main():
     # Normalización
     X = X.astype(float) / 255.
     # Reducción de dimensionalidad
-    data = X.reshape(len(X), -1)
-    data = data[:1000]
+    data = X[:1000]
 
     # Clustering
     clusters = [10, 30, 50, 70, 90]
