@@ -51,6 +51,11 @@ def infer(true_labels, cluster_labels, k=10):
         for j in range(10):
             print("    {} coincidencias con el dígito {}".format(cluster_coincidences[i][j], j))
         print()
+    mejor_coincidencia = dict()
+    for i in range(k):
+        mejor_coincidencia[i] = max(cluster_coincidences[i].items(), key=lambda x: x[1])[0]
+        print(f"Mejor coincidencia por cluster: {mejor_coincidencia[i]}")
+    return mejor_coincidencia
 
 
 def main():
@@ -60,7 +65,7 @@ def main():
     Y = y_train
     X = X.astype(float) / 255.
     data = X.reshape(len(X), -1)
-    data = data[:5000]
+    data = data[:1000]
     cluster_labels, centroids = kmeans(data, k)
     infer(Y, cluster_labels, k)
 
